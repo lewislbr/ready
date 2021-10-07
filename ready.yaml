@@ -1,0 +1,7 @@
+tasks:
+  - name: format
+    command: gofumpt -extra -l -w .
+  - name: lint
+    command: golangci-lint run --allow-parallel-runners --timeout 60s
+  - name: vet
+    command: go vet ./...
