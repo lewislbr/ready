@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"strings"
+	"time"
 
 	"gopkg.in/yaml.v2"
 )
@@ -39,10 +40,12 @@ func main() {
 		log.Fatalf("Failed to get config: %v\n", err)
 	}
 
+	total := len(cfg.Tasks)
 	failures := 0
+	start := time.Now()
 
-	for _, t := range cfg.Tasks {
-		fmt.Printf("⏳ Running %q... ", t.Name)
+	for i, t := range cfg.Tasks {
+		fmt.Printf("⏳ Running task %d of %d: %q... ", i+1, total, t.Name)
 
 		output, err := runTask(t)
 		if err != nil {
@@ -69,6 +72,8 @@ func main() {
 
 		os.Exit(1)
 	}
+
+	fmt.Printf("All tasks completed without failures in %v ✨\n", time.Since(start).Round(time.Millisecond))
 }
 
 func installHook() error {
