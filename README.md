@@ -65,7 +65,9 @@ tasks: # Array of tasks to be run (required)
 
 ## Example
 
-![example](example.png)
+![example-fail](example-fail.png)
+
+![example-success](example-success.png)
 
 ## Contributing
 
