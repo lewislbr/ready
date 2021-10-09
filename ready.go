@@ -65,15 +65,15 @@ func main() {
 
 	if failures > 0 {
 		if failures == 1 {
-			fmt.Println("Got a failure ⚠️  Please fix it and commit again")
+			fmt.Printf("Got a failure ⚠️  Please fix it and commit again\n\n")
 		} else {
-			fmt.Println("Got some failures ⚠️  Please fix them and commit again")
+			fmt.Printf("Got some failures ⚠️  Please fix them and commit again\n\n")
 		}
 
 		os.Exit(1)
 	}
 
-	fmt.Printf("All tasks completed without failures in %v ✨\n", time.Since(start).Round(time.Millisecond))
+	fmt.Printf("All tasks completed without failures in %v ✨\n\n", time.Since(start).Round(time.Millisecond))
 }
 
 func installHook() error {
