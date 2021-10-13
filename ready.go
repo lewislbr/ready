@@ -73,7 +73,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	fmt.Printf("All tasks completed without failures in %v ✨\n\n", time.Since(start).Round(time.Millisecond))
+	fmt.Printf("All tasks completed successfully in %v ✨\n\n", time.Since(start).Round(time.Millisecond))
 }
 
 func installHook() error {
