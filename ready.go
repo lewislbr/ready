@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -132,7 +133,7 @@ func (c *config) withYAML() (*config, error) {
 		return nil, fmt.Errorf("determining current path: %w", err)
 	}
 
-	file := strings.ReplaceAll(string(path), "\n", "") + "/ready.yaml"
+	file := filepath.Join(strings.TrimSuffix(string(path), "\n"), "/ready.yaml")
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, fmt.Errorf("reading file: %w", err)
