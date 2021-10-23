@@ -14,9 +14,13 @@ Additionally, to commit without running any task, the [`-n/--no-verify` git comm
 
 1. Install Ready
 
+You can use Go:
+
 ```sh
 go install github.com/lewislbr/ready@latest
 ```
+
+Or download the binary from the [releases page](https://github.com/lewislbr/ready/releases) and place it in your `$PATH`.
 
 2. Install hook
 
