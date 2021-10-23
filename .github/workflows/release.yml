@@ -2,8 +2,8 @@ name: Create cross platform builds
 
 on:
   release:
-    types: 
-        - created
+    types:
+      - created
 jobs:
   generate:
     name: Generate cross-platform builds
@@ -12,17 +12,17 @@ jobs:
       # step 1: checkout repository code
       - name: Checkout the repository
         uses: actions/checkout@v2
-      
+
       # step 2: generate build files
       - name: Generate build files
-        uses: thatisuday/go-cross-build@v1
+        uses: thatisuday/go-cross-build@master
         with:
-            platforms: 'linux/amd64, darwin/amd64, windows/amd64'
-            package: ''
-            name: 'ready'
-            compress: 'false'
-            dest: 'dist'
-      
+          platforms: "linux/amd64, darwin/amd64, windows/amd64"
+          package: ""
+          name: "ready"
+          compress: "false"
+          dest: "dist"
+
       # step 3: upload build-artifacts
       - name: Upload build-artifacts
         uses: skx/github-action-publish-binaries@master
