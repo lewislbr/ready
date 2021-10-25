@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -20,21 +21,16 @@ type (
 		Name      string `yaml:"name"`
 	}
 	config struct {
+		Path  string
 		Tasks []task `yaml:"tasks"`
 	}
 )
 
-const (
-	DefaultGitHookPath string = "./.git/hooks/pre-commit"
-)
-
 func main() {
-	if len(os.Args) > 1 && os.Args[1] == "init" {
-		hook := DefaultGitHookPath
-		if len(os.Args) > 2 {
-			hook = os.Args[2]
-		}
-		err := installHook(hook)
+	cfg := newConfig().withFlags()
+
+	if flag.NArg() > 0 && flag.Args()[0] == "init" {
+		err := installHook(cfg.Path)
 		if err != nil {
 			log.Fatalf("Error installing hook: %v\n", err)
 		}
@@ -44,7 +40,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	cfg, err := newConfig().withYAML()
+	cfg, err := cfg.withYAML()
 	if err != nil {
 		log.Fatalf("Failed to get config: %v\n", err)
 	}
@@ -85,8 +81,9 @@ func main() {
 	fmt.Printf("All tasks completed successfully in %v ✨\n\n", time.Since(start).Round(time.Millisecond))
 }
 
-func installHook(hook string) error {
-	_, err := os.Open(hook)
+func installHook(path string) error {
+	hook := "/pre-commit"
+	_, err := os.Open(path + hook)
 	if err == nil {
 		fmt.Println("A pre-commit hook already exists ℹ️  Do you want to overwrite it? [yes/no]")
 
@@ -97,6 +94,12 @@ func installHook(hook string) error {
 			fmt.Println("Ready stopped 🛑")
 
 			os.Exit(0)
+		}
+	}
+	if err != nil {
+		err := os.MkdirAll(path, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("creating folder: %w", err)
 		}
 	}
 
@@ -122,7 +125,7 @@ fi
 
 exit 0
 `)
-	err = os.WriteFile(hook, content, 0o755)
+	err = os.WriteFile(path+hook, content, 0o755)
 	if err != nil {
 		return fmt.Errorf("creating file: %w", err)
 	}
@@ -152,6 +155,18 @@ func (c *config) withYAML() (*config, error) {
 	}
 
 	return c, nil
+}
+
+func (c *config) withFlags() *config {
+	path := flag.String("path", "./.git/hooks", "Path where to install the git hook.")
+
+	flag.Parse()
+
+	if *path != "" {
+		c.Path = *path
+	}
+
+	return c
 }
 
 func runTask(t task) (string, error) {

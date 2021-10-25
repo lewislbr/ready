@@ -24,13 +24,19 @@ Or download the binary from the [releases page](https://github.com/lewislbr/read
 
 2. Install hook
 
-> Must be run in the repository root path (where the folder `.git` is located).
+> Must be run in the repository root path (where the `.git` folder is located).
 
 ```sh
 ready init
 ```
 
-This will check for any existing pre-commit hook, and if found, it will prompt to override it or abort the process. If no hook is found, a new one with execution rights will be created.
+By default, this will check for any existing pre-commit hook in `./.git/hooks/pre-commit`, and if found, it will prompt to override it or abort the process. If no hook is found, a new one with execution rights will be created.
+
+A custom installation path may be provided to the `init` command with the `-path` flag:
+
+```sh
+ready -path=foo/bar init # This will install the hook in `./foo/bar/pre-commit`, creating `./foo/bar` if not exists
+```
 
 3. Create tasks file
 
