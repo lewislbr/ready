@@ -24,9 +24,18 @@ type (
 	}
 )
 
+const (
+	DefaultGitHookPath string = "./.git/hooks/pre-commit"
+)
+
 func main() {
 	if len(os.Args) > 1 && os.Args[1] == "init" {
-		err := installHook()
+		hook := DefaultGitHookPath
+		if len(os.Args) > 2 {
+			hook = os.Args[2]
+		}
+		fmt.Printf("hooks: %s\n", hook)
+		err := installHook(hook)
 		if err != nil {
 			log.Fatalf("Error installing hook: %v\n", err)
 		}
@@ -77,8 +86,7 @@ func main() {
 	fmt.Printf("All tasks completed successfully in %v ✨\n\n", time.Since(start).Round(time.Millisecond))
 }
 
-func installHook() error {
-	hook := "./.git/hooks/pre-commit"
+func installHook(hook string) error {
 	_, err := os.Open(hook)
 	if err == nil {
 		fmt.Println("A pre-commit hook already exists ℹ️  Do you want to overwrite it? [yes/no]")
