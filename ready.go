@@ -34,7 +34,6 @@ func main() {
 		if len(os.Args) > 2 {
 			hook = os.Args[2]
 		}
-		fmt.Printf("hooks: %s\n", hook)
 		err := installHook(hook)
 		if err != nil {
 			log.Fatalf("Error installing hook: %v\n", err)
