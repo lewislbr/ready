@@ -30,6 +30,8 @@ jobs:
     steps:
       - name: Install Go
         uses: actions/setup-go@v2
+      - name: Checkout the repository
+        uses: actions/checkout@v2
       - name: Get git tag
         run: echo "GIT_TAG=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
       - name: Publish package
