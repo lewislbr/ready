@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"runtime"
 	"strings"
 	"time"
 
@@ -148,8 +149,11 @@ func (c *config) withYAML() (*config, error) {
 }
 
 func runTask(t task) (string, error) {
-	parts := strings.Split(t.Command, " ")
-	cmd := exec.Command(parts[0], parts[1:]...)
+	cmd := exec.Command("/bin/sh", "-c", t.Command)
+
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/C", t.Command)
+	}
 
 	if t.Directory != "" {
 		cmd.Dir = t.Directory
