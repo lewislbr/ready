@@ -79,7 +79,7 @@ func main() {
 }
 
 func installHook() error {
-	hook := "./.git/hooks/pre-commit"
+	hook := filepath.FromSlash("./.git/hooks/pre-commit")
 	_, err := os.Open(hook)
 	if err == nil {
 		fmt.Println("A pre-commit hook already exists ℹ️  Do you want to overwrite it? [yes/no]")
@@ -129,12 +129,19 @@ func newConfig() *config {
 }
 
 func (c *config) withYAML() (*config, error) {
-	path, err := exec.Command("pwd").CombinedOutput()
+	var path []byte
+	var err error
+
+	if runtime.GOOS == "windows" {
+		path, err = exec.Command("cd").CombinedOutput()
+	} else {
+		path, err = exec.Command("pwd").CombinedOutput()
+	}
 	if err != nil {
 		return nil, fmt.Errorf("determining current path: %w", err)
 	}
 
-	file := filepath.Join(strings.TrimSuffix(string(path), "\n"), "/ready.yaml")
+	file := filepath.Join(strings.TrimSuffix(string(path), "\n"), "ready.yaml")
 	data, err := os.ReadFile(file)
 	if err != nil {
 		return nil, fmt.Errorf("reading file: %w", err)
@@ -149,10 +156,12 @@ func (c *config) withYAML() (*config, error) {
 }
 
 func runTask(t task) (string, error) {
-	cmd := exec.Command("/bin/sh", "-c", t.Command)
+	var cmd *exec.Cmd
 
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command("cmd", "/C", t.Command)
+	} else {
+		cmd = exec.Command("/bin/sh", "-c", t.Command)
 	}
 
 	if t.Directory != "" {
