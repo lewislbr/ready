@@ -133,7 +133,6 @@ func (c *config) withYAML() (*config, error) {
 	var err error
 
 	if runtime.GOOS == "windows" {
-		fmt.Println(os.Getwd())
 		dir, errDir := os.Getwd()
 		err = errDir
 		byteDir := []byte(dir)
