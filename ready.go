@@ -129,17 +129,7 @@ func newConfig() *config {
 }
 
 func (c *config) withYAML() (*config, error) {
-	var path []byte
-	var err error
-
-	if runtime.GOOS == "windows" {
-		dir, errDir := os.Getwd()
-		err = errDir
-		byteDir := []byte(dir)
-		path = byteDir
-	} else {
-		path, err = exec.Command("pwd").CombinedOutput()
-	}
+	path, err := os.Getwd()
 	if err != nil {
 		return nil, fmt.Errorf("determining current path: %w", err)
 	}
