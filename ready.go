@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -37,17 +38,43 @@ func main() {
 		os.Exit(0)
 	}
 
+	all := flag.Bool("all", false, "Run all tasks without commit")
+
+	flag.Parse()
+
 	cfg, err := newConfig().withYAML()
 	if err != nil {
 		log.Fatalf("Failed to get config: %v\n", err)
 	}
 
-	total := len(cfg.Tasks)
+	successes := 0
 	failures := 0
 	start := time.Now()
 
-	for i, t := range cfg.Tasks {
-		fmt.Printf("⏳ Running task %d of %d: %q... ", i+1, total, t.Name)
+	for _, t := range cfg.Tasks {
+		if !*all {
+			dirs, err := exec.Command("git", "diff", "--dirstat=files,0", "HEAD").CombinedOutput()
+			if err != nil {
+				log.Fatalf("Error determining folders with changes: %v\n", err)
+			}
+
+			files, err := exec.Command("git", "diff", "--name-only", "HEAD").CombinedOutput()
+			if err != nil {
+				log.Fatalf("Error determining files with changes: %v\n", err)
+			}
+
+			if t.Directory == "" {
+				if len(files) == 0 {
+					continue
+				}
+			} else {
+				if len(dirs) == 0 || !strings.Contains(string(dirs), t.Directory) {
+					continue
+				}
+			}
+		}
+
+		fmt.Printf("Running task %s... ⏳ ", t.Name)
 
 		output, err := runTask(t)
 		if err != nil {
@@ -58,6 +85,8 @@ func main() {
 			continue
 		}
 
+		successes++
+
 		if output == "" {
 			fmt.Printf("Success ✅\n\n")
 		} else {
@@ -65,17 +94,23 @@ func main() {
 		}
 	}
 
+	if successes == 0 && failures == 0 {
+		fmt.Println("Nothing to do 💤")
+
+		os.Exit(1)
+	}
+
 	if failures > 0 {
 		if failures == 1 {
-			fmt.Printf("Got a failure ⚠️  Please fix it and commit again\n\n")
+			fmt.Printf("Got 1 failure. Please fix it and try again ⚠️ \n\n")
 		} else {
-			fmt.Printf("Got some failures ⚠️  Please fix them and commit again\n\n")
+			fmt.Printf("Got %d failures. Please fix them and try again ⚠️ \n\n", failures)
 		}
 
 		os.Exit(1)
 	}
 
-	fmt.Printf("All tasks completed successfully in %v ✨\n\n", time.Since(start).Round(time.Millisecond))
+	fmt.Printf("%d tasks completed successfully in %v ✨\n\n", successes, time.Since(start).Round(time.Millisecond))
 }
 
 func installHook() error {
@@ -109,7 +144,7 @@ fi
 
 latest_state=$(git diff --name-only)
 if [[ $latest_state != $initial_state ]]; then
-	echo "Some files have been modified by the hook. Please handle them and commit again"
+	echo "Some files have been modified by the hook. Please handle them and commit again 🔧"
 
 	exit 1
 fi

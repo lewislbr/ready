@@ -4,9 +4,11 @@ Ready is a program to run tasks before a commit using a [pre-commit git hook](ht
 
 For example, you can automatically run formatting, linting, and testing when running `git commit`, so you are assured every commit is up to the standards, issues are spotted early, and to avoid any CI pipeline failures down the road.
 
-For now, tasks are run on all the repository files, not just the staged ones.
+Tasks are run on the repository folder that contains files with changes, including the root. Monorepos are supported by using the `directory` option on the configuration file, where tasks will be run only on subfolders with changes.
 
-At any time, tasks can be run without committing by running `ready`.
+At any time, tasks can be run without committing by running `ready`, or `ready -all` to run all tasks.
+
+If there are no changes, no tasks will be run.
 
 Additionally, to commit without running any task, the [`-n/--no-verify` git commit flag](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt--n) can be used.
 
@@ -44,7 +46,7 @@ tasks:
     command: golangci-lint run
 ```
 
-By default, commands will be run in the root directory, but they can be scoped to nested directories:
+By default, commands will be run in the root directory, but they can be scoped to nested directories with the `directory` option:
 
 ```yaml
 tasks:
