@@ -58,10 +58,17 @@ func main() {
 				log.Fatalf("Error determining folders with changes: %v\n", err)
 			}
 
-			files, err := exec.Command("git", "diff", "--name-only", "HEAD").CombinedOutput()
+			changed, err := exec.Command("git", "diff", "--name-only", "HEAD").CombinedOutput()
 			if err != nil {
 				log.Fatalf("Error determining files with changes: %v\n", err)
 			}
+
+			new, err := exec.Command("git", "ls-files", "--others").CombinedOutput()
+			if err != nil {
+				log.Fatalf("Error determining new files: %v\n", err)
+			}
+
+			files := append(changed, new...)
 
 			if t.Directory == "" {
 				if len(files) == 0 {
