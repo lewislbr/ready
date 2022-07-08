@@ -6,9 +6,7 @@ For example, you can automatically run formatting, linting, and testing when run
 
 Tasks are run on the repository folder that contains files with changes, including the root. Monorepos are supported by using the `directory` option on the configuration file, where tasks will be run only on subfolders with changes.
 
-At any time, tasks can be run without committing by running `ready`, or `ready -all` to run all tasks.
-
-If there are no changes, no tasks will be run.
+At any time, tasks can be run without committing by running `ready`. By default, if there are no changed files, no tasks will be run, but you can use `ready -all` to run all tasks even when no changes exist.
 
 Additionally, to commit without running any task, the [`-n/--no-verify` git commit flag](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt--n) can be used.
 
