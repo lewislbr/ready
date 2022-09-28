@@ -103,8 +103,7 @@ func main() {
 
 	if successes == 0 && failures == 0 {
 		fmt.Println("Nothing to do 💤")
-
-		os.Exit(1)
+		return
 	}
 
 	if failures > 0 {
