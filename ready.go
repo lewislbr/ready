@@ -32,9 +32,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("Error installing hook: %v\n", err)
 		}
-
 		fmt.Println("Ready ready ✅")
-
 		os.Exit(0)
 	}
 
@@ -57,19 +55,15 @@ func main() {
 			if err != nil {
 				log.Fatalf("Error determining folders with changes: %v\n", err)
 			}
-
 			changed, err := exec.Command("git", "diff", "--name-only", "HEAD").CombinedOutput()
 			if err != nil {
 				log.Fatalf("Error determining files with changes: %v\n", err)
 			}
-
 			new, err := exec.Command("git", "ls-files", "--others").CombinedOutput()
 			if err != nil {
 				log.Fatalf("Error determining new files: %v\n", err)
 			}
-
 			files := append(changed, new...)
-
 			if t.Directory == "" {
 				if len(files) == 0 {
 					continue
@@ -86,9 +80,7 @@ func main() {
 		output, err := runTask(t)
 		if err != nil {
 			fmt.Printf("Failure ❌\n\n%v\n", err)
-
 			failures++
-
 			continue
 		}
 
@@ -112,7 +104,6 @@ func main() {
 		} else {
 			fmt.Printf("Got %d failures. Please fix them and try again ⚠️ \n\n", failures)
 		}
-
 		os.Exit(1)
 	}
 
@@ -124,13 +115,10 @@ func installHook() error {
 	_, err := os.Open(hook)
 	if err == nil {
 		fmt.Println("A pre-commit hook already exists ℹ️  Do you want to overwrite it? [yes/no]")
-
 		res := ""
 		fmt.Fscan(os.Stdin, &res)
-
 		if res != "yes" {
 			fmt.Println("Ready stopped 🛑")
-
 			os.Exit(0)
 		}
 	}
@@ -207,7 +195,6 @@ func runTask(t task) (string, error) {
 		if string(output) == "" {
 			return "", err
 		}
-
 		return "", errors.New(string(output))
 	}
 
