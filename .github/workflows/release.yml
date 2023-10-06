@@ -28,7 +28,7 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           binary_name: "ready"
-          ldflags: -X "main.Version=${{ env.GIT_TAG }}"
+          ldflags: -X main.Version=${{ env.GIT_TAG }}
   publish:
     name: Publish package to Go proxy
     runs-on: ubuntu-latest
@@ -43,4 +43,4 @@ jobs:
       - name: Get git tag
         run: echo "GIT_TAG=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
       - name: Publish package
-        run: GO111MODULE=on GOPROXY=proxy.golang.org go list -m -ldflags '-X "main.Version=$GIT_TAG"' github.com/lewislbr/ready@"$GIT_TAG"
+        run: GO111MODULE=on GOPROXY=proxy.golang.org go list -ldflags "-X main.Version=${{ env.GIT_TAG }}" -m github.com/lewislbr/ready@${{ env.GIT_TAG }}
