@@ -51,27 +51,15 @@ func main() {
 
 	for _, t := range cfg.Tasks {
 		if !*all {
-			dirs, err := exec.Command("git", "diff", "--dirstat=files,0", "HEAD").CombinedOutput()
-			if err != nil {
-				log.Fatalf("Error determining folders with changes: %v\n", err)
-			}
-			changed, err := exec.Command("git", "diff", "--name-only", "HEAD").CombinedOutput()
+			staged, err := exec.Command("git", "diff", "--name-only", "--cached", "--diff-filter=AM").CombinedOutput()
 			if err != nil {
 				log.Fatalf("Error determining files with changes: %v\n", err)
 			}
-			new, err := exec.Command("git", "ls-files", "--others").CombinedOutput()
-			if err != nil {
-				log.Fatalf("Error determining new files: %v\n", err)
+			if len(staged) == 0 {
+				continue
 			}
-			files := append(changed, new...)
-			if t.Directory == "" {
-				if len(files) == 0 {
-					continue
-				}
-			} else {
-				if len(dirs) == 0 || !strings.Contains(string(dirs), t.Directory) {
-					continue
-				}
+			if t.Directory != "" && !strings.Contains(string(staged), t.Directory) {
+				continue
 			}
 		}
 
