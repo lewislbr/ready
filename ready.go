@@ -137,7 +137,6 @@ fi
 latest_state=$(git diff --name-only)
 if [[ $latest_state != $initial_state ]]; then
 	echo "Some files have been modified by the hook. Please handle them and commit again 🔧"
-
 	exit 1
 fi
 
