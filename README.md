@@ -1,12 +1,12 @@
 # Ready
 
-Ready is a program to run tasks before a commit using a [pre-commit git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
+Ready is a program to run tasks on staged files before a commit using a [pre-commit git hook](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 
 For example, you can automatically run formatting, linting, and testing when running `git commit`, so you are assured every commit is up to the standards, issues are spotted early, and to avoid any CI pipeline failures down the road.
 
-Tasks are run on the repository folder that contains files with changes, including the root. Monorepos are supported by using the `directory` option on the configuration file, where tasks will be run only on subfolders with changes.
+Tasks are run when there are staged files, by default on the repository root folder or on other folders if specified.
 
-At any time, tasks can be run without committing by running `ready`. By default, if there are no changed files, no tasks will be run, but you can use `ready -all` to run all tasks even when no changes exist.
+At any time, tasks can be run without committing by running `ready`. If there are no staged files, no tasks will be run, but you can use `ready -all` to run all tasks even when no staged files exist.
 
 Additionally, to commit without running any task, the [`-n/--no-verify` git commit flag](https://git-scm.com/docs/git-commit#Documentation/git-commit.txt--n) can be used.
 
@@ -24,7 +24,7 @@ Or download the binary from the [releases page](https://github.com/lewislbr/read
 
 2. Install hook
 
-> Must be run in the repository root path (where the folder `.git` is located).
+Run `ready init` in the repository root path (where the folder `.git` is located).
 
 ```sh
 ready init
@@ -34,7 +34,7 @@ This will check for any existing pre-commit hook, and if found, it will prompt t
 
 3. Create tasks file
 
-> File must be named `ready.yaml` and placed in the repository root path (where the folder `.git` is located).
+Create a file named `ready.yaml` and place it in the repository root path (where the folder `.git` is located).
 
 ```yaml
 tasks:
