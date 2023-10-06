@@ -16,7 +16,7 @@ jobs:
         goarch: [amd64, arm64]
     steps:
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-tags: true
       - name: Get git tag
@@ -36,7 +36,7 @@ jobs:
       - name: Install Go
         uses: actions/setup-go@v2
       - name: Checkout the repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-tags: true
       - name: Get git tag
