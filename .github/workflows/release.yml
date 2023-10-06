@@ -16,6 +16,8 @@ jobs:
     steps:
       - name: Checkout the repository
         uses: actions/checkout@v2
+      - name: Get git tag
+        run: echo "GIT_TAG=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
       - name: Generate build files
         uses: wangyoucao577/go-release-action@master
         with:
@@ -23,7 +25,7 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           binary_name: "ready"
-          ldflags: "-s -w"
+          ldflags: "-s -w -X 'main.Version=$GIT_TAG'"
   publish:
     name: Publish package to Go proxy
     runs-on: ubuntu-latest

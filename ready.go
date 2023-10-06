@@ -28,6 +28,8 @@ type (
 	}
 )
 
+var Version string
+
 func main() {
 	go func() {
 		sig := make(chan os.Signal, 1)
@@ -47,8 +49,14 @@ func main() {
 	}
 
 	all := flag.Bool("all", false, "Run all tasks without commit")
+	version := flag.Bool("version", false, "Print Ready version")
 
 	flag.Parse()
+
+	if *version {
+		fmt.Printf("Ready version %v ℹ️\n", Version)
+		return
+	}
 
 	cfg, err := newConfig().withYAML()
 	if err != nil {
