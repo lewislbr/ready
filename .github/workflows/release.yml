@@ -20,7 +20,7 @@ jobs:
         with:
           fetch-tags: true
       - name: Get git tag
-        run: echo "GIT_TAG=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
+        run: echo "GIT_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
       - name: Generate build files
         uses: wangyoucao577/go-release-action@master
         with:
@@ -40,6 +40,6 @@ jobs:
         with:
           fetch-tags: true
       - name: Get git tag
-        run: echo "GIT_TAG=`echo $(git describe --tags --abbrev=0)`" >> $GITHUB_ENV
+        run: echo "GIT_TAG=${GITHUB_REF/refs\/tags\//}" >> $GITHUB_ENV
       - name: Publish package
         run: GO111MODULE=on GOPROXY=proxy.golang.org go list -m github.com/lewislbr/ready@"$GIT_TAG"
