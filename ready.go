@@ -7,9 +7,11 @@ import (
 	"log"
 	"os"
 	"os/exec"
+	"os/signal"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"syscall"
 	"time"
 
 	"gopkg.in/yaml.v2"
@@ -27,6 +29,14 @@ type (
 )
 
 func main() {
+	go func() {
+		sig := make(chan os.Signal, 1)
+		signal.Notify(sig, os.Interrupt, syscall.SIGTERM)
+		<-sig
+		fmt.Println("\n\nReady stopped 🛑")
+		os.Exit(0)
+	}()
+
 	if len(os.Args) > 1 && os.Args[1] == "init" {
 		err := installHook()
 		if err != nil {
