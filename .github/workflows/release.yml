@@ -25,7 +25,7 @@ jobs:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           binary_name: "ready"
-          ldflags: "-s -w -X 'main.Version=$GIT_TAG'"
+          ldflags: "-s -w -X 'main.Version=${{ env.GIT_TAG }}'"
   publish:
     name: Publish package to Go proxy
     runs-on: ubuntu-latest
