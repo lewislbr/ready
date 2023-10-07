@@ -43,7 +43,7 @@ func main() {
 	if len(os.Args) > 1 && os.Args[1] == "init" {
 		err := installHook()
 		if err != nil {
-			log.Fatalf("Error installing hook: %v\n", err)
+			log.Fatalf("Error installing hook: %v 💥\n", err)
 		}
 		fmt.Println("Ready ready ✅")
 		os.Exit(0)
@@ -69,7 +69,7 @@ func main() {
 
 	cfg, err := newConfig().withYAML()
 	if err != nil {
-		log.Fatalf("Failed to get config: %v\n", err)
+		log.Fatalf("Failed to get config: %v 💥\n", err)
 	}
 
 	successes := 0
@@ -80,7 +80,7 @@ func main() {
 		if !*all {
 			staged, err := exec.Command("git", "diff", "--name-only", "--cached", "--diff-filter=AM").CombinedOutput()
 			if err != nil {
-				log.Fatalf("Error determining files with changes: %v\n", err)
+				log.Fatalf("Error determining files with changes: %v 💥\n", err)
 			}
 			if len(staged) == 0 {
 				continue
