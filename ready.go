@@ -10,6 +10,7 @@ import (
 	"os/signal"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"syscall"
 	"time"
@@ -54,6 +55,14 @@ func main() {
 	flag.Parse()
 
 	if *version {
+		if Version == "" {
+			info, ok := debug.ReadBuildInfo()
+			if !ok {
+				log.Fatal("Failed to read build info 💥\n")
+			}
+			fmt.Printf("Ready version %v ℹ️\n", info.Main.Version)
+			return
+		}
 		fmt.Printf("Ready version %v ℹ️\n", Version)
 		return
 	}
