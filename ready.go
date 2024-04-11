@@ -85,7 +85,7 @@ func main() {
 			if len(staged) == 0 {
 				continue
 			}
-			if t.Directory != "" && !strings.Contains(string(staged), t.Directory) {
+			if t.Directory != "" && !strings.Contains(string(staged), addTrailingSlash(t.Directory)) {
 				continue
 			}
 		}
@@ -213,4 +213,14 @@ func runTask(t task) (string, error) {
 	}
 
 	return string(output), nil
+}
+
+func addTrailingSlash(dir string) string {
+	if runtime.GOOS == "windows" {
+		dir += "\\"
+	} else {
+		dir += "/"
+	}
+
+	return dir
 }
