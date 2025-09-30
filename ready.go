@@ -72,8 +72,7 @@ func main() {
 		log.Fatalf("Failed to get config: %v 💥\n", err)
 	}
 
-	successes := 0
-	failures := 0
+	completed := 0
 	start := time.Now()
 
 	for _, t := range cfg.Tasks {
@@ -89,18 +88,14 @@ func main() {
 				continue
 			}
 		}
-
 		fmt.Printf("Running task %s... ⏳ ", t.Name)
-
 		output, err := runTask(t)
 		if err != nil {
 			fmt.Printf("Failure ❌\n\n%v\n", err)
-			failures++
-			continue
+			os.Exit(1)
+			break
 		}
-
-		successes++
-
+		completed++
 		if output == "" {
 			fmt.Printf("Success ✅\n\n")
 		} else {
@@ -108,21 +103,12 @@ func main() {
 		}
 	}
 
-	if successes == 0 && failures == 0 {
+	if completed == 0 {
 		fmt.Println("Nothing to do 💤")
 		return
 	}
 
-	if failures > 0 {
-		if failures == 1 {
-			fmt.Printf("Got 1 failure. Please fix it and try again ⚠️ \n\n")
-		} else {
-			fmt.Printf("Got %d failures. Please fix them and try again ⚠️ \n\n", failures)
-		}
-		os.Exit(1)
-	}
-
-	fmt.Printf("%d tasks completed successfully in %v ✨\n\n", successes, time.Since(start).Round(time.Millisecond))
+	fmt.Printf("%d tasks completed successfully in %v ✨\n\n", completed, time.Since(start).Round(time.Millisecond))
 }
 
 func installHook() error {
